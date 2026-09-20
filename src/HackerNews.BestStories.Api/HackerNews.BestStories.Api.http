@@ -1,6 +1,19 @@
 @HackerNews.BestStories.Api_HostAddress = http://localhost:5195
 
-GET {{HackerNews.BestStories.Api_HostAddress}}/weatherforecast/
+### Get a story
+GET {{HackerNews.BestStories.Api_HostAddress}}/stories/8863
+Accept: application/json
+
+###
+
+### No matching item 404 response
+GET {{HackerNews.BestStories.Api_HostAddress}}/stories/0
+Accept: application/json
+
+###
+
+# Matching item is not a story
+GET {{HackerNews.BestStories.Api_HostAddress}}/stories/2921983
 Accept: application/json
 
 ###
