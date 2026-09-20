@@ -1,3 +1,5 @@
+namespace HackerNews.BestStories.Api.HackerNewsClient.V0;
+
 using System.Text.Json.Serialization;
 
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]

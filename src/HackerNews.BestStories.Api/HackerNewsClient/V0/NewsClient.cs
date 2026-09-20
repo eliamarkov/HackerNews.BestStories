@@ -1,3 +1,4 @@
+namespace HackerNews.BestStories.Api.HackerNewsClient.V0;
 public sealed class NewsClient(HttpClient http) : INewsClient
 {
     public async Task<IReadOnlyList<int>> GetBestStoryIdsAsync(CancellationToken ct) =>

@@ -1,3 +1,5 @@
+namespace HackerNews.BestStories.Api.HackerNewsClient.V0;
+
 public abstract record StoryResult
 {
     private StoryResult() { }

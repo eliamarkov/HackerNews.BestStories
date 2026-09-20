@@ -1,3 +1,5 @@
+using HackerNews.BestStories.Api;
+using HackerNews.BestStories.Api.HackerNewsClient.V0;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 using Serilog;
