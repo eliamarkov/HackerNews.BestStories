@@ -1,10 +1,17 @@
 using Microsoft.Extensions.Options;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+builder.Host
+    .UseSerilog((context, loggerConfiguration) =>
+        loggerConfiguration
+            .ReadFrom.Configuration(context.Configuration)
+            .Enrich.FromLogContext()
+    );
 
 builder.Services
+    .AddOpenApi()
     .AddOptions<HackerNewsOptions>()
     .Bind(builder.Configuration.GetSection("HackerNews"))
     .Validate(
@@ -19,7 +26,6 @@ builder.Services
         "HackerNews:BaseAddress must be an absolute HTTP or HTTPS origin without a path.")
     .ValidateOnStart();
 
-// Program.cs
 builder.Services.AddHttpClient<INewsClient, NewsClient>((serviceProvider, client) =>
 {
     var o = serviceProvider.GetRequiredService<IOptions<HackerNewsOptions>>().Value;
@@ -28,7 +34,8 @@ builder.Services.AddHttpClient<INewsClient, NewsClient>((serviceProvider, client
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseSerilogRequestLogging();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
