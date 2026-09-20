@@ -10,7 +10,9 @@ public sealed class NewsClient(HttpClient http) : INewsClient
         return item switch
         {
             null => new StoryResult.NotFound(id),
-            _ => new StoryResult.Found(item)
+            { Type: var type } when string.Equals(type, "story", StringComparison.OrdinalIgnoreCase) =>
+                new StoryResult.Found(item),
+            _ => new StoryResult.NotFound(id)
         };
     }
 }

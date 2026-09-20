@@ -30,9 +30,9 @@ public sealed class HackerNewsClientTests
     }
 
     [TestMethod]
-    public async Task GetItemAsync_WhenItemExist_ReturnsStory()
+    public async Task GetItemAsync_WhenItemExistAndIsAStory_ReturnsStory()
     {
-        var testStory = new Story { Id = Id, Title = "Test Story" };
+        var testStory = new Story { Id = Id, Title = "Test Story", Type = "story" };
         using var httpClient = CreateMockHttpClient(mockHttp => 
             mockHttp.When(TestUri)
                 .Respond(() => Task.FromResult(new HttpResponseMessage
@@ -50,6 +50,28 @@ public sealed class HackerNewsClientTests
         Assert.IsNotNull(story);
         Assert.AreEqual(Id, story.Id);
         Assert.AreEqual(testStory.Title, story.Title);
+    }
+
+    [TestMethod]
+    public async Task GetItemAsync_WhenItemIsNotAStory_ReturnsNotFound()
+    {
+        var testComment = new Story { Id = Id, Type = "comment" };
+        using var httpClient = CreateMockHttpClient(mockHttp =>
+            mockHttp.When(TestUri)
+                .Respond(() => Task.FromResult(new HttpResponseMessage
+                {
+                    Content = JsonContent.Create(testComment)
+                }))
+        );
+
+        var client = new NewsClient(httpClient);
+
+        var result = await client.GetItemAsync(Id, CancellationToken.None);
+
+        var notFound = result as StoryResult.NotFound;
+
+        Assert.IsNotNull(notFound);
+        Assert.AreEqual(Id, notFound.Id);
     }
 
     [TestMethod]
