@@ -1,3 +1,5 @@
+namespace HackerNews.BestStories.Api.HackerNewsClient.V0;
+
 public sealed class Story
 {
     public string? By { get; init; }

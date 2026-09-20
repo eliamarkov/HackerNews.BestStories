@@ -1,19 +1,7 @@
 @HackerNews.BestStories.Api_HostAddress = http://localhost:5195
 
-### Get a story
-GET {{HackerNews.BestStories.Api_HostAddress}}/stories/8863
-Accept: application/json
-
-###
-
-### No matching item 404 response
-GET {{HackerNews.BestStories.Api_HostAddress}}/stories/0
-Accept: application/json
-
-###
-
-# Matching item is not a story
-GET {{HackerNews.BestStories.Api_HostAddress}}/stories/2921983
+# Get top n stories
+GET {{HackerNews.BestStories.Api_HostAddress}}/stories/100
 Accept: application/json
 
 ###

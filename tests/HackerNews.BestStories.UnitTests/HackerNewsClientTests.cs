@@ -1,4 +1,5 @@
-﻿using RichardSzalay.MockHttp ;
+﻿using HackerNews.BestStories.Api.HackerNewsClient.V0;
+using RichardSzalay.MockHttp ;
 using System.Net;
 using System.Net.Http.Json;
 
