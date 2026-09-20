@@ -8,6 +8,9 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host
+    .UseWindowsService(options => options.ServiceName = "HackerNews.BestStories.API");
+
+builder.Host
     .UseSerilog((context, loggerConfiguration) =>
         loggerConfiguration
             .ReadFrom.Configuration(context.Configuration)
