@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Scalar.AspNetCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,6 @@ builder.Host
     );
 
 builder.Services
-    .AddOpenApi()
     .AddOptions<HackerNewsOptions>()
     .Bind(builder.Configuration.GetSection("HackerNews"))
     .Validate(
@@ -26,11 +26,15 @@ builder.Services
         "HackerNews:BaseAddress must be an absolute HTTP or HTTPS origin without a path.")
     .ValidateOnStart();
 
-builder.Services.AddHttpClient<INewsClient, NewsClient>((serviceProvider, client) =>
-{
-    var o = serviceProvider.GetRequiredService<IOptions<HackerNewsOptions>>().Value;
-    client.BaseAddress = o.BaseAddress;
-}); 
+builder.Services
+    .AddHttpClient<INewsClient, NewsClient>((serviceProvider, client) =>
+    {
+        var o = serviceProvider.GetRequiredService<IOptions<HackerNewsOptions>>().Value;
+        client.BaseAddress = o.BaseAddress;
+    });
+
+builder.Services
+    .AddOpenApi();
 
 var app = builder.Build();
 
@@ -39,6 +43,10 @@ app.UseSerilogRequestLogging();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options => options
+    .WithTitle("Hacker News Best Stories API")
+    .WithTheme(ScalarTheme.Purple)
+    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient));
 }
 
 app.UseHttpsRedirection();
