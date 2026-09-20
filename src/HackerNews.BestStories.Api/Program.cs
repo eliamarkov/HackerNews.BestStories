@@ -1,5 +1,6 @@
 using HackerNews.BestStories.Api;
 using HackerNews.BestStories.Api.HackerNewsClient.V0;
+using HackerNews.BestStories.Api.Services;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 using Serilog;
@@ -31,9 +32,13 @@ builder.Services
 builder.Services
     .AddHttpClient<INewsClient, NewsClient>((serviceProvider, client) =>
     {
-        var o = serviceProvider.GetRequiredService<IOptions<HackerNewsOptions>>().Value;
-        client.BaseAddress = o.BaseAddress;
+        var options = serviceProvider.GetRequiredService<IOptions<HackerNewsOptions>>().Value;
+        client.BaseAddress = options.BaseAddress;
     });
+
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<IBestStorySnapshot, BestStorySnapshot>();
+builder.Services.AddHostedService<BestStoriesRefresher>();
 
 builder.Services
     .AddOpenApi();
@@ -53,19 +58,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/stories/{id:int}", async (
-    int id,
-    INewsClient newsClient,
+app.MapGet("/stories/{count:int}", async (
+    int count,
+    IBestStorySnapshot service,
     CancellationToken ct) =>
 {
-    var result = await newsClient.GetItemAsync(id, ct);
+    var result = service.Current.Take(count);
 
-    return result switch
-    {
-        StoryResult.Found found => Results.Ok(found.Story),
-        StoryResult.NotFound => Results.NotFound(),
-        _ => Results.StatusCode(StatusCodes.Status500InternalServerError)
-    };
+    return result;
 });
 
 app.Run();
