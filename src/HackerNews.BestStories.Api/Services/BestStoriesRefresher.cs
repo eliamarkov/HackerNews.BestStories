@@ -1,9 +1,10 @@
 using HackerNews.BestStories.Api.HackerNewsClient.V0;
 using Microsoft.Extensions.Options;
 using StoryDto = HackerNews.BestStories.Api.Dtos.Story;
+
 namespace HackerNews.BestStories.Api.Services;
 
-internal sealed partial class BestStoriesRefresher(
+public sealed partial class BestStoriesRefresher(
     INewsClient client,
     IBestStorySnapshot store,
     TimeProvider timeProvider,
